@@ -21,25 +21,23 @@ contract MyNft is ERC721Enumerable, Ownable {
     require(!_paused, "contract currently paused");
     _;
    }
-    constructor() ERC721("MyNFT", "NFT"){}
-
-    function mintNFT(address recipent, string memory tokenURI)
-    public 
-    returns (uint256) {
-       uint256 newItemId = _tokenIdCounter++;
-        _mint(recipent, newItemId);
-        _setTokenURI(newItemId, tokenURI);
-        return newItemId;
+    constructor(string memory baseURI) ERC721("MyNFT", "NFT"){
+        _baseTokenURI = baseURI;
     }
 
-    function generateCharacter(uint256 _tokenIdCounter) public returns (string memory) {
-        bytes memory svg = abi.encodePacked(
-            '<svg width="500" height="500" xmlns="http://www.w3.org/2000/svg">'
-            '<rect width="100%" height="100%" fill="black" />'
-            '<text x="50%" y="50%" fill="white" font-size="48" text-anchor="middle">Your Name</text>'
-            '</svg>'
-            );
-            return string(abi.encodePacked(
-            ));
+    function mintNFT() public payable onlyWhenNotPaused {
+        require(tokenIds < maxTokenIds, "Exceed maximum supply");
+        require(msg.value >= _price, "Ether sent is not correct");
+        tokenIds += 1;
+        _safeMint(msg.sender, tokenIds);
+    } 
+
+    function _baseURI() internal view virtual override returns (string memory) {
+        return _baseTokenURI;
     }
+
+    function tokenURI()
+      
+
+  
 }
