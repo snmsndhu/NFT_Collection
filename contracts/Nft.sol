@@ -36,7 +36,13 @@ contract MyNft is ERC721Enumerable, Ownable {
         return _baseTokenURI;
     }
 
-    function tokenURI()
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
+
+        string memory baseURI = _baseURI();
+
+        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString(),".json")): "";
+    }
       
 
   
