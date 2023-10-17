@@ -43,7 +43,19 @@ contract MyNft is ERC721Enumerable, Ownable {
 
         return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString(),".json")): "";
     }
-      
 
-  
+    function setPaused(bool val) public onlyOwner {
+        _paused = val;
+    }
+
+    function withdraw() public onlyOwner {
+        address _owner = owner();
+        uint256 amount = address(this).balance;
+        (bool sent,) = _owner.call{value: amount} ("");
+        require(sent, "Failed to send Ethers");
+    }
+
+    receive() external payable {}
+
+    fallback() external payable {}
 }
