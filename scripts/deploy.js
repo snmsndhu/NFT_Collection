@@ -1,10 +1,12 @@
+const hre = require("hardhat");
 async function main() {
-  const MyNFT = await ethers.getContractFactory("MyNft");
+  const metadataURL = "";
 
-  // Start deployment, returning a promise that resolves to a contract object
-  const myNFT = await MyNFT.deploy();
-  await myNFT.deployed();
-  console.log("Contract deployed to address:", myNFT.address);
+  const MyNFT = await hre.ethers.deployContract("MyNft", [metadataURL]);
+
+  await MyNFT.waitForDeployment();
+
+  console.log("Contract deployed to address:", MyNFT.target);
 }
 
 main()
