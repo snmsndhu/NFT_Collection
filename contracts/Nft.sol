@@ -2,9 +2,9 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-contract MyNft is ERC721Enumerable, Ownable {
+contract MyNft is ERC721Enumerable {
    using Strings for uint256;
 
    string _baseTokenURI;
@@ -21,7 +21,7 @@ contract MyNft is ERC721Enumerable, Ownable {
     require(!_paused, "contract currently paused");
     _;
    }
-    constructor(string memory baseURI) ERC721("MyNFT", "NFT"){
+    constructor(string memory baseURI ) ERC721("MyNFT", "NFT"){
         _baseTokenURI = baseURI;
     }
 
@@ -36,19 +36,19 @@ contract MyNft is ERC721Enumerable, Ownable {
         return _baseTokenURI;
     }
 
-    function tokenURI(uint256 tokenId) public view override returns (string memory) {
-        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
+     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+        require(_requireOwned(tokenId), "ERC721Metadata: URI query for nonexistent token");
 
         string memory baseURI = _baseURI();
 
         return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString(),".json")): "";
     }
 
-    function setPaused(bool val) public onlyOwner {
+    function setPaused(bool val) public {
         _paused = val;
     }
 
-    function withdraw() public onlyOwner {
+    function withdraw() public  {
         address _owner = owner();
         uint256 amount = address(this).balance;
         (bool sent,) = _owner.call{value: amount} ("");
