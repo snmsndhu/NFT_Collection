@@ -5,12 +5,10 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-contract MyNft is ERC721Enumerable, Ownable {
+abstract contract MyNft is ERC721Enumerable, Ownable {
    using Strings for uint256;
 
    string _baseTokenURI;
-   
-   address public _owner = msg.sender;
 
    uint256 public _price = 0.01 ether;
 
@@ -24,9 +22,8 @@ contract MyNft is ERC721Enumerable, Ownable {
     require(!_paused, "contract currently paused");
     _;
    }
-    constructor(string memory baseURI, address initialOwner) ERC721("MyNFT", "NFT"){
+    constructor(string memory baseURI ) ERC721("MyNFT", "NFT"){
         _baseTokenURI = baseURI;
-        _owner = initialOwner;
     }
 
     function mintNFT() public payable onlyWhenNotPaused {
@@ -41,7 +38,7 @@ contract MyNft is ERC721Enumerable, Ownable {
     }
 
      function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-        require(_requireOwned(tokenId), "ERC721Metadata: URI query for nonexistent token");
+        _requireOwned(tokenId);
 
         string memory baseURI = _baseURI();
 
