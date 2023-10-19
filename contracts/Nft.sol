@@ -3,11 +3,14 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-contract MyNft is ERC721Enumerable {
+contract MyNft is ERC721Enumerable, Ownable {
    using Strings for uint256;
 
    string _baseTokenURI;
+   
+   address public _owner = msg.sender;
 
    uint256 public _price = 0.01 ether;
 
@@ -21,8 +24,9 @@ contract MyNft is ERC721Enumerable {
     require(!_paused, "contract currently paused");
     _;
    }
-    constructor(string memory baseURI ) ERC721("MyNFT", "NFT"){
+    constructor(string memory baseURI, address initialOwner) ERC721("MyNFT", "NFT"){
         _baseTokenURI = baseURI;
+        _owner = initialOwner;
     }
 
     function mintNFT() public payable onlyWhenNotPaused {
@@ -44,11 +48,11 @@ contract MyNft is ERC721Enumerable {
         return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString(),".json")): "";
     }
 
-    function setPaused(bool val) public {
+    function setPaused(bool val) public onlyOwner {
         _paused = val;
     }
 
-    function withdraw() public  {
+    function withdraw() public onlyOwner {
         address _owner = owner();
         uint256 amount = address(this).balance;
         (bool sent,) = _owner.call{value: amount} ("");
