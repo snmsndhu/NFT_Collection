@@ -1,7 +1,7 @@
 const hre = require("hardhat");
 require("dotenv").config({ path: ".env" });
 async function main() {
-  const metadataURL = "";
+  const metadataURL = process.env.METADATA_URL;
 
   const MyNFT = await hre.ethers.deployContract("MyNft", [metadataURL]);
 
