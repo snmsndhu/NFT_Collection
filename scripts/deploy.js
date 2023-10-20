@@ -3,7 +3,7 @@ require("dotenv").config({ path: ".env" });
 async function main() {
   const metadataURL = process.env.METADATA_URL;
 
-  const MyNFT = await hre.ethers.deployContract("MyNft", [metadataURL]);
+  const MyNFT = await hre.ethers.getContractAt("MyNft", [metadataURL]);
 
   await MyNFT.waitForDeployment();
 
