@@ -56,7 +56,11 @@ abstract contract MyNft is ERC721Enumerable, Ownable {
         require(sent, "Failed to send Ethers");
     }
 
-    receive() external payable {}
+    receive() external payable {
+        
+    }
 
-    fallback() external payable {}
+    fallback() external payable {
+
+    }
 }
