@@ -1,15 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import {ERC721URIStorage} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-abstract contract MyNft is ERC721Enumerable, Ownable {
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+contract MyNft is ERC721URIStorage, Ownable  {
    using Strings for uint256;
 
    string _baseTokenURI;
-
    uint256 public _price = 0.01 ether;
 
    bool public _paused;
@@ -22,9 +20,10 @@ abstract contract MyNft is ERC721Enumerable, Ownable {
     require(!_paused, "contract currently paused");
     _;
    }
-    constructor(string memory baseURI ) ERC721("MyNFT", "NFT"){
-        _baseTokenURI = baseURI;
-    }
+   constructor(string memory baseURI) ERC721("MyNFT", "NFT") {
+    _baseTokenURI = baseURI;
+   }
+   
 
     function mintNFT() public payable onlyWhenNotPaused {
         require(tokenIds < maxTokenIds, "Exceed maximum supply");
