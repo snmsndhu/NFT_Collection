@@ -1,63 +1,48 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {ERC721URIStorage} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-contract MyNft is ERC721URIStorage, Ownable  {
-   using Strings for uint256;
 
-   string _baseTokenURI;
-   uint256 public _price = 0.01 ether;
+contract MyToken is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
+using Strings for uint256;
 
-   bool public _paused;
+string _baseTokenURI;
 
-   uint256 public maxTokenIds = 10;
 
-   uint256 public tokenIds;
+    constructor(address initialOwner, string memory baseURI)
+        ERC721("MyToken", "MTK")
+        Ownable(initialOwner)  
+    {_baseTokenURI = baseURI;}
 
-   modifier onlyWhenNotPaused {
-    require(!_paused, "contract currently paused");
-    _;
-   }
-   constructor(string memory baseURI) ERC721("MyNFT", "NFT") {
-    _baseTokenURI = baseURI;
-   }
-   
-
-    function mintNFT() public payable onlyWhenNotPaused {
-        require(tokenIds < maxTokenIds, "Exceed maximum supply");
-        require(msg.value >= _price, "Ether sent is not correct");
-        tokenIds += 1;
-        _safeMint(msg.sender, tokenIds);
-    } 
-
-    function _baseURI() internal view virtual override returns (string memory) {
-        return _baseTokenURI;
+    function safeMint(address to, uint256 tokenId, string memory uri)
+        public
+        onlyOwner
+    {
+        _safeMint(to, tokenId);
+        _setTokenURI(tokenId, uri);
     }
 
-     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-        _requireOwned(tokenId);
+    // The following functions are overrides required by Solidity.
 
-        string memory baseURI = _baseURI();
-
-        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString(),".json")): "";
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (string memory)
+    {
+        return super.tokenURI(tokenId);
     }
 
-    function setPaused(bool val) public onlyOwner {
-        _paused = val;
-    }
-
-    function withdraw() public onlyOwner {
-        address _owner = owner();
-        uint256 amount = address(this).balance;
-        (bool sent,) = _owner.call{value: amount} ("");
-        require(sent, "Failed to send Ethers");
-    }
-
-    receive() external payable {}
-
-    fallback() external payable {
-        
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
     }
 }
