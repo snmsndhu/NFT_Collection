@@ -10,7 +10,10 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 contract MyNft is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
 using Strings for uint256;
 
-string _baseTokenURI;
+  string _baseTokenURI;
+  uint256 public _price = 0.01 ether; 
+  uint256 public maxTokenIds = 3;
+  uint256 public tokenIds;
 
 
     constructor(address initialOwner, string memory baseURI)
@@ -19,9 +22,11 @@ string _baseTokenURI;
     {_baseTokenURI = baseURI;}
 
     function safeMint(address to, uint256 tokenId, string memory uri)
-        public
+        public payable
         onlyOwner
-    {
+    {   require(tokenIds < maxTokenIds, "Exceed maximum LW3Punks supply");
+        require(msg.value >= _price, "Ether sent is not correct");
+        tokenIds +=1;
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
     }
