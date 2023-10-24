@@ -7,14 +7,14 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-contract MyToken is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
+contract MyNft is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
 using Strings for uint256;
 
 string _baseTokenURI;
 
 
     constructor(address initialOwner, string memory baseURI)
-        ERC721("MyToken", "MTK")
+        ERC721("MyNft", "NFT")
         Ownable(initialOwner)  
     {_baseTokenURI = baseURI;}
 
