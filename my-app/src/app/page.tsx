@@ -12,4 +12,25 @@ export default function Home() {
   const [tokenIdsMinted, setTokenIdsMinted] = useState("0");
 
   const web3ModalRef = useRef();
+
+  const publicMint = async () => {
+    try {
+      console.log("Public Mint");
+
+      const signer = await getProviderOrSigner(true);
+
+      const nftContract = new Contract(NFT_CONTRACT_ADDRESS, abi, signer);
+
+      const tx = await nftContract.mint({
+        value: utils.parseEther("0.01"),
+      });
+      setLoading(true);
+
+      await tx.wait();
+      setLoading(false);
+      window.alert("you successfully mintes a NFT");
+    } catch (err) {
+      console.log(err);
+    }
+  };
 }
