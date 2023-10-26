@@ -17,7 +17,7 @@ export default function Home() {
     try {
       console.log("Public Mint");
 
-      const signer = await getProviderOrSigner(true);
+      const signer = await getProviderOrSigner(tru);
 
       const nftContract = new Contract(NFT_CONTRACT_ADDRESS, abi, signer);
 
@@ -31,6 +31,15 @@ export default function Home() {
       window.alert("you successfully mintes a NFT");
     } catch (err) {
       console.log(err);
+    }
+  };
+
+  const connectWallet = async () => {
+    try {
+      await getProviderOrSigner();
+      setWalletConnected(true);
+    } catch (err) {
+      console.error(err);
     }
   };
 }
