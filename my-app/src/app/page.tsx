@@ -17,7 +17,7 @@ export default function Home() {
     try {
       console.log("Public Mint");
 
-      const signer = await getProviderOrSigner(tru);
+      const signer = await getProviderOrSigner(true);
 
       const nftContract = new Contract(NFT_CONTRACT_ADDRESS, abi, signer);
 
