@@ -3,7 +3,6 @@ import Head from "next/head";
 import React, { useEffect, useRef, useState } from "react";
 import Web3 from "web3";
 import { abi, NFT_CONTRACT_ADDRESS } from "../constants";
-import styles from "../styles/Home.module.css";
 
 export default function Home() {
   const [walletConnected, setWalletConnected] = useState(false);
@@ -22,7 +21,7 @@ export default function Home() {
       setLoading(true);
       await tx.wait();
       setLoading(false);
-      window.alert("You successfully minted a LW3Punk!");
+      window.alert("You successfully minted a NFT!");
     } catch (err) {
       console.error(err);
     }
