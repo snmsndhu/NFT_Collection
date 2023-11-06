@@ -1,20 +1,41 @@
-import Web3 from "web3";
-import Head from "next/head";
-import React, { useEffect, useRef, useState } from "react";
-import { abi, NFT_CONTRACT_ADDRESS } from "../../constants";
-require("dotenv").config({ path: ".env" });
+"use client";
+import { useState } from "react";
 
-const API_PROVIDER = process.env.WEB3_PROVIDER;
-const web3 = new Web3(API_PROVIDER);
+function App() {
+  // State variables for wallet connection status and address
+  const [connected, setConnected] = useState(false);
+  const [walletAddress, setWalletAddress] = useState("");
 
-export default function Home() {
-  const [walletConnected, setWalletConnected] = useState(false);
+  // Function to connect/disconnect the wallet
+  async function connectWallet() {
+    if (!connected) {
+      // Connect the wallet using ethers.js
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const _walletAddress = await signer.getAddress();
+      setConnected(true);
+      setWalletAddress(_walletAddress);
+    } else {
+      // Disconnect the wallet
+      window.ethereum.selectedAddress = null;
+      setConnected(false);
+      setWalletAddress("");
+    }
+  }
 
-  const [loading, setLoading] = useState(false);
-
-  const [tokenIdsMinted, setTokenIdsMinted] = useState("0");
-
-  const web3ModalRef = useRef();
-
-  function connectWallet() {}
+  return (
+    <div className="app">
+      <div className="main">
+        <div className="content">
+          <button className="btn" onClick={connectWallet}>
+            {connected ? "Disconnect Wallet" : "Connect Wallet"}
+          </button>
+          <h3>Address</h3>
+          <h4 className="wal-add">{walletAddress}</h4>
+        </div>
+      </div>
+    </div>
+  );
 }
+
+export default App;
